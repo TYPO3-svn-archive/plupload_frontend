@@ -6,7 +6,13 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="tt_content.list_type_pi1">Plupload</label>
+			<label index="tt_content.list_type_pi1">jansass Upload</label>
+			<label index="tx_pluploadfrontend_uploads">jansass Upload Uploads</label>
+			<label index="tx_pluploadfrontend_uploads.name">name</label>
+			<label index="tx_pluploadfrontend_uploads.path">path</label>
+			<label index="tx_pluploadfrontend_uploads.ip">ip</label>
+			<label index="tx_pluploadfrontend_uploads.sessid">sessid</label>
+			<label index="tx_pluploadfrontend_uploads.sPath">sPath</label>
 		</languageKey>
 	</data>
 </T3locallang>

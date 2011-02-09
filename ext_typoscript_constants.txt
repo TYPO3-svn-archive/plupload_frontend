@@ -1,0 +1,14 @@
+plugin.tx_pluploadfrontend_pi1 {
+	# cat=plugin.pluploadfrontend/string; type=string; label=Uploadpath
+	uploadPath = fileadmin/uploads/
+	# cat=plugin.pluploadfrontend/integer; type=int+; label=File Directory Length
+	filedirLength = 16
+	# cat=plugin.pluploadfrontend/string; type=string; label=Mailto
+	mailto = mailto@yourdomain.com
+	# cat=plugin.pluploadfrontend/string; type=string; label=Mail Absender
+	mailabsender = fileadmin
+	# cat=plugin.pluploadfrontend/integer; type=int+; label=Database Entry Storage ID
+	storageId = 0
+	# cat=plugin.pluploadfrontend/integer; type=int+; label=Redirect to Page ID
+	redirectTo = 0
+}

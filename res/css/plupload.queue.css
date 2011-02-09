@@ -83,6 +83,8 @@
 
 .plupload_filelist li {
 	padding: 10px 8px;
+    margin:0;
+    list-style:none;
 	background: #F5F5F5 url('../img/backgrounds.gif') repeat-x 0 -156px;
 	border-bottom: 1px solid #DDD;
 }

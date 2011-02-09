@@ -72,7 +72,7 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
     private function getSPath($_length) {
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 '*',         // SELECT ...
-                'tx_jansassupload_uploads',     // FROM ...
+                'tx_pluploadfrontend_uploads',     // FROM ...
                 'ip=\''.$_SERVER['REMOTE_ADDR'].'\'',    // WHERE...
                 '',            // GROUP BY...
                 '',    // ORDER BY...
@@ -135,7 +135,7 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
                 'sPath'		=>	$_sPath,
             );
 
-            $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_jansassupload_uploads', $insertArray);
+            $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_pluploadfrontend_uploads', $insertArray);
 
         } catch (Exception $e) {
             $return = array(
@@ -160,7 +160,7 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
 
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 '*',         // SELECT ...
-                'tx_jansassupload_uploads',     // FROM ...
+                'tx_pluploadfrontend_uploads',     // FROM ...
                 'ip=\''.$_SERVER['REMOTE_ADDR'].'\'',    // WHERE...
                 '',            // GROUP BY...
                 '',    // ORDER BY...
@@ -173,13 +173,13 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
             Filepath: '.$_upload['path'].'<br/>
             </div>';
         }
-        $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_jansassupload_uploads', 'ip=\''.$_SERVER['REMOTE_ADDR'].'\'');
+        $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_pluploadfrontend_uploads', 'ip=\''.$_SERVER['REMOTE_ADDR'].'\'');
         return $_data;
     }
     private function isSend() {
         $this->log();
 
-        $s_Template = $this->cObj->fileResource('EXT:'.$this->extKey.'/res/template/upload.html');
+        $s_Template = $this->cObj->fileResource('EXT:'.$this->extKey.'/res/template/mail.html');
         $s_Tmpl = $this->cObj->getSubpart($s_Template, '###MAIL_TEXT###');
 
         $a_Marker = array();
@@ -225,7 +225,7 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
         //Clean DB
         $_time = date('U') - 60*60*24*7;
 
-        $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_jansassupload_uploads', 'tstamp < '.$_time);
+        $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_pluploadfrontend_uploads', 'tstamp < '.$_time);
     }
     
 	/**
