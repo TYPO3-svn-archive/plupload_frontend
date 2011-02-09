@@ -1,0 +1,151 @@
+page.includeCSS.plupload_frontend_1 = EXT:plupload_frontend/res/css/plupload.queue.css
+page.includeCSS.plupload_frontend_2 = EXT:plupload_frontend/res/css/jquery.ui.plupload.css
+
+[userFunc = user_pluploadFrontendOnCurrentPage]
+
+    // if plupload_frontend is on current page build up validation js
+
+lib.pluploadfrontendjs = COA
+lib.pluploadfrontendjs {
+    wrap = (function($){|})(jQuery);
+    10 = TEXT
+    10.value (
+
+    $(function() {
+        $("#uploader").pluploadQueue({
+            // General settings
+            runtimes : 'gears,flash,silverlight,browserplus,html5',
+            url : 'upload.php',
+            max_file_size : '10mb',
+            chunk_size : '1mb',
+            unique_names : true,
+
+            // Resize images on clientside if we can
+            resize : {width : 320, height : 240, quality : 90},
+
+            // Specify what files to browse for
+            filters : [
+                {title : "Image files", extensions : "jpg,gif,png"},
+                {title : "Zip files", extensions : "zip"}
+            ],
+
+            // Flash settings
+            flash_swf_url : '/typo3conf/ext/plupload_frontend/res/js/plupload.flash.swf',
+
+            // Silverlight settings
+            silverlight_xap_url : '/typo3conf/ext/plupload_frontend/res/js/plupload.silverlight.xap'
+        });
+
+        // Client side form validation
+        $('form').submit(function(e) {
+            var uploader = $('#uploader').pluploadQueue();
+
+            // Validate number of uploaded files
+            if (uploader.total.uploaded == 0) {
+                // Files in queue upload them first
+                if (uploader.files.length > 0) {
+                    // When all files are uploaded submit form
+                    uploader.bind('UploadProgress', function() {
+                        if (uploader.total.uploaded == uploader.files.length)
+                            $('form').submit();
+                    });
+
+                    uploader.start();
+                } else
+                    alert('You must at least upload one file.');
+
+                e.preventDefault();
+            }
+        });
+    });
+
+    )
+}
+
+[userFunc = user_powermailOnCurrentPage] && [userFunc = user_pluploadFrontendCheckT3jquery(false)]
+
+    // if powermail is on current page and t3jquery is NOT loaded include jquery and jquery tools from cdn
+
+page.includeJSFooter {
+	plupload_frontend_10.external = 1
+	plupload_frontend_10 = http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.js
+	plupload_frontend_20 = EXT:plupload_frontend/res/js/gears_init.js
+	plupload_frontend_30.external = 1
+	plupload_frontend_30 = http://bp.yahooapis.com/2.4.21/browserplus-min.js
+	plupload_frontend_40 = EXT:plupload_frontend/res/js/plupload.full.min.js
+	plupload_frontend_50 = EXT:plupload_frontend/res/js/jquery.plupload.queue.min.js
+}
+
+    // if powermail is on current page and t3jquery is NOT loaded include validation js into page footer
+
+page.footerData.20469 < lib.pluploadfrontendjs
+page.footerData.20469.wrap (
+ <script type="text/javascript">
+ /* <![CDATA[*/
+ <!--
+ (function($){|})(jQuery);
+ // -->
+ /*]]>*/
+ </script>
+)
+
+[end]
+
+[userFunc = user_pluploadFrontendOnCurrentPage] && [userFunc = user_pluploadFrontendCheckT3jquery(true)]
+
+    // if powermail is on current page and t3jquery is loaded include jquery and validation js using t3jquery
+
+includeLibs.t3jquery = EXT:t3jquery/class.tx_t3jquery.php
+page.20469 = COA
+page.20469 {
+    10 = USER
+    10 {
+        userFunc = tx_t3jquery->addJS
+        tofooter = 1
+        forceOnTop = 1
+    }
+    20 = USER
+    20 {
+        userFunc = tx_t3jquery->addJS
+        jsfile = EXT:plupload_frontend/res/js/gears_init.js
+        compress = 1
+        tofooter = 1
+    }
+    30 = USER
+    30 {
+        userFunc = tx_t3jquery->addJS
+	    jsurl = http://bp.yahooapis.com/2.4.21/browserplus-min.js
+        tofooter = 1
+    }
+    40 = USER
+    40 {
+        userFunc = tx_t3jquery->addJS
+        jsfile = EXT:plupload_frontend/res/js/plupload.full.min.js
+        compress = 1
+        tofooter = 1
+    }
+    50 = USER
+    50 {
+        userFunc = tx_t3jquery->addJS
+        jsfile = EXT:plupload_frontend/res/js/jquery.plupload.queue.min.js
+        compress = 1
+        tofooter = 1
+    }
+    60 = USER
+    60 {
+        userFunc = tx_t3jquery->addJS
+        jsdata.cObject < lib.pluploadfrontendjs
+        compress = 1
+        tofooter = 1
+    }
+}
+
+[end]
+
+[userFunc = user_pluploadFrontendOnCurrentPage] && [userFunc = user_pluploadFrontendCheckT3jqueryCDNMode(false)]
+
+    // if powermail is on current page and t3jquery is loaded and NOT in CDN Mode delete jquery tools
+
+page.20469.20 >
+
+[end]
