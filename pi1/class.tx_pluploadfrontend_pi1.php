@@ -58,7 +58,7 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
 		$content='
             <form action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="POST">
                 <div id="uploader">
-                    <p>You browser doesn\'t have Flash, Silverlight, Gears, BrowserPlus or HTML5 support..</p>
+                    <p>You browser doesn\'t have Flash, Silverlight, Gears, BrowserPlus or HTML5 support.</p>
                 </div>
             </form>
 		';
