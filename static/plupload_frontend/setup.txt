@@ -12,7 +12,7 @@ lib.pluploadfrontendjs {
     10.value (
 
     $(function() {
-        $("#uploader").pluploadQueue({
+        var uploader = $("#uploader").pluploadQueue({
             // General settings
             runtimes : 'gears,flash,silverlight,browserplus,html5',
             url : '/?eID=plupload_frontend',
@@ -23,6 +23,8 @@ lib.pluploadfrontendjs {
             // Resize images on clientside if we can
             //resize : {width : 320, height : 240, quality : 90},
             rename : true,
+
+            multipart_params : {datafield: 'testintg123'},
 
             // Specify what files to browse for
             filters : [

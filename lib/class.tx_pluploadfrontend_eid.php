@@ -98,6 +98,7 @@ class tx_pluploadfrontend_eID {
             $chunk = t3lib_div::_GP('chunk');
             $chunks = t3lib_div::_GP('chunks');
             $fileName = t3lib_div::_GP('name');
+            $queued = t3lib_div::_GP('queued');
 
             // Clean the fileName for security reasons
             $fileName = preg_replace('/[^\w\._]+/', '', t3lib_div::convUmlauts($fileName));
@@ -187,6 +188,10 @@ class tx_pluploadfrontend_eID {
             }
 
             if($chunk == $chunks - 1){
+
+                if($this->debug) {
+                    t3lib_div::devLog('POST/GET Vars: ' . $queued, $extKey, 0, $_REQUEST);
+                }
 
                 $insertArray = array(
                     'pid' 		=> 	0,
