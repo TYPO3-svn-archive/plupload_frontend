@@ -6,13 +6,26 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="tt_content.list_type_pi1">jansass Upload</label>
-			<label index="tx_pluploadfrontend_uploads">jansass Upload Uploads</label>
-			<label index="tx_pluploadfrontend_uploads.name">name</label>
-			<label index="tx_pluploadfrontend_uploads.path">path</label>
-			<label index="tx_pluploadfrontend_uploads.ip">ip</label>
+			<label index="tt_content.list_type_pi1">Plupload Frontend</label>
+			<label index="tx_pluploadfrontend_uploads">Plupload Uploads</label>
+			<label index="tx_pluploadfrontend_uploads.name">Name</label>
+			<label index="tx_pluploadfrontend_uploads.path">Path</label>
+			<label index="tx_pluploadfrontend_uploads.ip">IP</label>
 			<label index="tx_pluploadfrontend_uploads.sessid">sessid</label>
 			<label index="tx_pluploadfrontend_uploads.sPath">sPath</label>
+            <label index="fe_users.tx_pluploadfrontend_upload_folder">Upload folder name</label>
+            <label index="fe_groups.tx_pluploadfrontend_email_leader">Email group leader</label>
 		</languageKey>
+        <languageKey index="de" type="array">
+            <label index="tt_content.list_type_pi1">Uploadify</label>
+            <label index="tx_pluploadfrontend_uploads">Plupload Uploads</label>
+            <label index="tx_pluploadfrontend_uploads.name">Name</label>
+            <label index="tx_pluploadfrontend_uploads.path">Pfad</label>
+            <label index="tx_pluploadfrontend_uploads.ip">IP</label>
+            <label index="tx_pluploadfrontend_uploads.sessid">sessid</label>
+            <label index="tx_pluploadfrontend_uploads.sPath">sPath</label>
+            <label index="fe_users.tx_pluploadfrontend_upload_folder">Upload-Ordnername</label>
+            <label index="fe_groups.tx_pluploadfrontend_email_leader">Email Gruppenleiter</label>
+        </languageKey>
 	</data>
 </T3locallang>

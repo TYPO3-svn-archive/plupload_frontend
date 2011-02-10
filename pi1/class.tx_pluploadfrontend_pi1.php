@@ -93,6 +93,10 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
     }
 
     private function isUpload() {
+
+                // HTTP headers for no cache etc
+
+        /*
         $_uPath = $this->conf['uploadPath'];
         $_dirLength = $this->conf['filedirLength'];
 
@@ -110,6 +114,7 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
             );
 
             $_FILES['Filedata']['name'] = str_replace(array_keys($_replace),array_values($_replace),$_FILES['Filedata']['name']);
+            $_FILES['Filedata']['name'] = preg_replace('/[^\w\._]+/', '', $_FILES['Filedata']['name']);
 
             move_uploaded_file($_FILES['Filedata']['tmp_name'], $absFilePath . $_sPath . '/' . $_FILES['Filedata']['name']);
 
@@ -175,6 +180,7 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
         }
         $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_pluploadfrontend_uploads', 'ip=\''.$_SERVER['REMOTE_ADDR'].'\'');
         return $_data;
+         */
     }
     private function isSend() {
         $this->log();
@@ -208,7 +214,6 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
         $this->htmlMail->addPlain($email['body']);
         $this->htmlMail->setHTML($this->htmlMail->encodeMsg($html_start.$email['body'].$html_end));
         $this->htmlMail->send($email['address']);
-
 
         $s_Redirect = t3lib_div::locationheaderUrl(
             $this->cObj->typoLink_URL(
@@ -256,6 +261,7 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
                 <div id="uploader">
                     <p>You browser doesn\'t have Flash, Silverlight, Gears, BrowserPlus or HTML5 support.</p>
                 </div>
+                <input type="submit" value="Send" />
             </form>
 		';
 	

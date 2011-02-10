@@ -25,7 +25,7 @@ After upload an automatical generated email with links to the uploaded files wil
 	'state' => 'alpha',
 	'internal' => '',
 	'uploadfolder' => 0,
-	'createDirs' => '',
+    'createDirs' => 'uploads/tx_pluploadfrontend',
 	'modify_tables' => '',
 	'clearCacheOnLoad' => 0,
 	'lockType' => '',

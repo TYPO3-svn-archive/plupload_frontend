@@ -1,0 +1,2 @@
+# cat=basic/storage/010; type=text; label= Basic path to upload dir
+feuseruploadpath = uploads/tx_pluploadfrontend/

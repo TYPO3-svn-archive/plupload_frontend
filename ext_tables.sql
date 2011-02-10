@@ -16,3 +16,17 @@ CREATE TABLE tx_pluploadfrontend_uploads (
 	PRIMARY KEY (uid),
 	KEY parent (pid)
 );
+
+#
+# Table structure for table 'fe_users'
+#
+CREATE TABLE fe_users (
+	tx_pluploadfrontend_upload_folder varchar(255) DEFAULT '' NOT NULL
+);
+
+#
+# Table structure for table 'fe_groups'
+#
+CREATE TABLE fe_groups (
+	tx_pluploadfrontend_email_leader varchar(255) DEFAULT '' NOT NULL
+);
