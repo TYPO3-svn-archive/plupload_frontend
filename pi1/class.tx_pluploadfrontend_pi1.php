@@ -257,10 +257,13 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
         }
 
 		$content='
+            <textarea id="log" style="width: 100%; height: 150px; font-size: 11px" spellcheck="false" wrap="off"></textarea>
             <form action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="POST">
                 <div id="uploader">
                     <p>You browser doesn\'t have Flash, Silverlight, Gears, BrowserPlus or HTML5 support.</p>
                 </div>
+                <p><input type="text" name="name" style="width:100%;" placeholder="Ihr Name" /></p>
+                <p><textarea name="message" style="width:100%;height:150px;" placeholder="Hinweis zu den Dateien"></textarea></p>
                 <input type="submit" value="Send" />
             </form>
 		';

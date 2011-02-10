@@ -206,6 +206,9 @@ class tx_pluploadfrontend_eID {
 
                 $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_pluploadfrontend_uploads', $insertArray);
 
+            }
+
+            if(t3lib_div::_GP('send')) {
                 $email = array();
 
                 $email['body'] = t3lib_div::getIndpEnv('TYPO3_SITE_URL') . $targetDir . DIRECTORY_SEPARATOR . $fileName;
@@ -227,9 +230,8 @@ class tx_pluploadfrontend_eID {
                 $this->htmlMail->addPlain($email['body']);
                 $this->htmlMail->setHTML($this->htmlMail->encodeMsg($html_start . $email['body'] . $html_end));
                 $this->htmlMail->send($email['address']);
+                die('{"jsonrpc" : "2.0", "result" : true, "id" : "id"}');
             }
-
-
 
             // Return JSON-RPC response
             die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');

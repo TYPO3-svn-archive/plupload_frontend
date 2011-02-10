@@ -17,7 +17,7 @@
             <label index="fe_groups.tx_pluploadfrontend_email_leader">Email group leader</label>
 		</languageKey>
         <languageKey index="de" type="array">
-            <label index="tt_content.list_type_pi1">Uploadify</label>
+            <label index="tt_content.list_type_pi1">Plupload Frontend</label>
             <label index="tx_pluploadfrontend_uploads">Plupload Uploads</label>
             <label index="tx_pluploadfrontend_uploads.name">Name</label>
             <label index="tx_pluploadfrontend_uploads.path">Pfad</label>
