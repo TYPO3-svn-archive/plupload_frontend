@@ -40,6 +40,7 @@ class tx_pluploadfrontend_eID {
         $extKey = 'plupload_frontend';
 
         $this->debug = t3lib_extMgm::isLoaded('devlog');
+        $this->debug = false;
         
         // Initialize FE user object
         $feUserObj = tslib_eidtools::initFeUser();
@@ -200,7 +201,7 @@ class tx_pluploadfrontend_eID {
                     'name'		=>	$fileName,
                     'path'		=>	t3lib_div::getIndpEnv('TYPO3_SITE_URL') . $targetDir . DIRECTORY_SEPARATOR,
                     'ip'		=>	$_SERVER['REMOTE_ADDR'],
-                    'sessid'	=>	$chunk,
+                    'sessid'	=>	'',
                     'sPath'		=>	'',
                 );
 
@@ -209,7 +210,7 @@ class tx_pluploadfrontend_eID {
             }
 
             if(t3lib_div::_GP('send')) {
-                $email = array();
+/*                $email = array();
 
                 $email['body'] = t3lib_div::getIndpEnv('TYPO3_SITE_URL') . $targetDir . DIRECTORY_SEPARATOR . $fileName;
 
@@ -229,7 +230,7 @@ class tx_pluploadfrontend_eID {
                 $this->htmlMail->returnPath = 'ag@t3wa.de';
                 $this->htmlMail->addPlain($email['body']);
                 $this->htmlMail->setHTML($this->htmlMail->encodeMsg($html_start . $email['body'] . $html_end));
-                $this->htmlMail->send($email['address']);
+                $this->htmlMail->send($email['address']);*/
                 die('{"jsonrpc" : "2.0", "result" : true, "id" : "id"}');
             }
 

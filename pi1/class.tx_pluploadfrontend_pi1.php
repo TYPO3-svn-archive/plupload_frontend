@@ -41,12 +41,11 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
 	var $prefixId      = 'tx_pluploadfrontend_pi1';		// Same as class name
 	var $scriptRelPath = 'pi1/class.tx_pluploadfrontend_pi1.php';	// Path to this script relative to the extension dir.
 	var $extKey        = 'plupload_frontend';	// The extension key.
+    var $debug = false;
+    var $targetMail;
+    var $targetDir;
 
     private function log() {
-        $result['time'] = date('r');
-        $result['addr'] = substr_replace(gethostbyaddr($_SERVER['REMOTE_ADDR']), '******', 0, 6);
-        $result['agent'] = $_SERVER['HTTP_USER_AGENT'];
-
         if (count($_GET)) {
             $result['get'] = $_GET;
         }
@@ -56,16 +55,8 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
         if (count($_FILES)) {
             $result['files'] = $_FILES;
         }
-
-        // we kill an old file to keep the size small
-        if (file_exists('script.log') && filesize('script.log') > 102400) {
-            unlink('script.log');
-        }
-
-        $log = @fopen('script.log', 'a');
-        if ($log) {
-            fputs($log, print_r($result, true) . "\n---\n");
-            fclose($log);
+        if($this->debug){
+            t3lib_div::devLog('Form parameter:', $this->extKey, 0, $result);
         }
     }
 
@@ -92,72 +83,6 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
         return $_out;
     }
 
-    private function isUpload() {
-
-                // HTTP headers for no cache etc
-
-        /*
-        $_uPath = $this->conf['uploadPath'];
-        $_dirLength = $this->conf['filedirLength'];
-
-        $absFilePath = t3lib_div::getFileAbsFileName($_uPath);
-
-        $_sPath = $this->getSPath($_dirLength);
-
-        $error = 0;
-
-        try {
-            mkdir($absFilePath . $_sPath);
-
-            $_replace = array(
-                ' '	=>	'_',
-            );
-
-            $_FILES['Filedata']['name'] = str_replace(array_keys($_replace),array_values($_replace),$_FILES['Filedata']['name']);
-            $_FILES['Filedata']['name'] = preg_replace('/[^\w\._]+/', '', $_FILES['Filedata']['name']);
-
-            move_uploaded_file($_FILES['Filedata']['tmp_name'], $absFilePath . $_sPath . '/' . $_FILES['Filedata']['name']);
-
-            $return = array(
-                'status' => '1',
-                'name' => $_FILES['Filedata']['name']
-            );
-
-
-            $_url = t3lib_div::locationheaderUrl(
-                $this->cObj->typoLink_URL(
-                    array('parameter' => $_uPath.$_sPath.'/' . $_FILES['Filedata']['name'])
-                )
-            );
-            $insertArray = array(
-                'pid' 		=> 	$this->conf['storageId'],
-                'tstamp' 	=> 	date('U'),
-                'crdate'	=>	date('U'),
-                'name'		=>	$_FILES['Filedata']['name'],
-                'path'		=>	$_url,//$absFilePath . $_sPath . '/' . $_FILES['Filedata']['name'],
-                'ip'		=>	$_SERVER['REMOTE_ADDR'],
-                'sessid'	=>	session_id(),
-                'sPath'		=>	$_sPath,
-            );
-
-            $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_pluploadfrontend_uploads', $insertArray);
-
-        } catch (Exception $e) {
-            $return = array(
-                'status' => '0',
-                'name' => $_FILES['Filedata']['name']
-            );
-            $error = 1;
-        }
-
-
-        if (!$error) {
-            $return['hash'] = md5_file($absFilePath . $_sPath . '/' .$_FILES['Filedata']['name']);
-        }
-        echo json_encode($return);
-        die();
-    }
-
     private function getUploadData() {
 
         $_data = '';
@@ -166,26 +91,27 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 '*',         // SELECT ...
                 'tx_pluploadfrontend_uploads',     // FROM ...
-                'ip=\''.$_SERVER['REMOTE_ADDR'].'\'',    // WHERE...
+                'ip=\'' . $_SERVER['REMOTE_ADDR'] . '\'',    // WHERE...
                 '',            // GROUP BY...
                 '',    // ORDER BY...
                 ''            // LIMIT to 10 rows, starting with number 5 (MySQL compat.)
             );
 
         while ($_upload = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-            $_data .= '<div>
-            Filename: '.$_upload['name'].'<br/>
-            Filepath: '.$_upload['path'].'<br/>
-            </div>';
+            $_data .= '<li><a href="' . $_upload['path'] . $_upload['name'] . '">' . $_upload['name'] . '</a></li>';
         }
-        $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_pluploadfrontend_uploads', 'ip=\''.$_SERVER['REMOTE_ADDR'].'\'');
+        $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_pluploadfrontend_uploads', 'ip=\'' . $_SERVER['REMOTE_ADDR'] . '\'');
         return $_data;
-         */
     }
+
+    /**
+     * 
+     * @return void
+     */
     private function isSend() {
         $this->log();
 
-        $s_Template = $this->cObj->fileResource('EXT:'.$this->extKey.'/res/template/mail.html');
+        $s_Template = $this->cObj->fileResource('EXT:' . $this->extKey . '/res/templates/mail.html');
         $s_Tmpl = $this->cObj->getSubpart($s_Template, '###MAIL_TEXT###');
 
         $a_Marker = array();
@@ -193,13 +119,14 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
         $a_Marker['###UPLOAD_DATA###'] = $this->getUploadData();
 
 
-        $a_Marker['###INPUT_NAME###'] = $_POST['name'];
-        $a_Marker['###INPUT_INHALT###'] = $_POST['inhalt'];
+        $a_Marker['###INPUT_NAME###'] = $this->piVars['name'];
+        $a_Marker['###INPUT_COMPANY###'] = $this->piVars['company'];
+        $a_Marker['###INPUT_INHALT###'] = $this->piVars['description'];
         $email['body'] = $this->cObj->substituteMarkerArrayCached($s_Tmpl, $a_Marker);
 
-        $email['address']= $this->conf['mailto'];
+        $email['address'] = $this->targetEmail;
 
-        $email['subject']='Neuer Upload auf Ihrem Server';
+        $email['subject'] = 'Neuer Upload auf Ihrem Server';
 
         $html_start='<html><head><title>Neuer Upload auf Ihrem Server</title></head><body>';
         $html_end='</body></html>';
@@ -208,21 +135,27 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
         $this->htmlMail->start();
         $this->htmlMail->recipient = $email['address'];
         $this->htmlMail->subject = $email['subject'];
-        $this->htmlMail->from_email = $this->conf['mailto'];
-        $this->htmlMail->from_name = $this->conf['mailabsender'];
-        $this->htmlMail->returnPath = $this->conf['mailto'];
+        $this->htmlMail->from_email = ($this->feUserEmail != '') ? $this->feUserEmail : $this->conf['mailto'];
+        $this->htmlMail->from_name = ($this->feUserName != '') ? $this->feUserName : $this->conf['mailabsender'];
+        $this->htmlMail->returnPath = ($this->feUserEmail != '') ? $this->feUserEmail : $this->conf['mailto'];
         $this->htmlMail->addPlain($email['body']);
-        $this->htmlMail->setHTML($this->htmlMail->encodeMsg($html_start.$email['body'].$html_end));
+        $this->htmlMail->setHTML($this->htmlMail->encodeMsg($html_start . $email['body'] . $html_end));
         $this->htmlMail->send($email['address']);
+        if($this->debug) {
+            t3lib_div::devLog('A Email was sent to ' . $this->targetEmail, $this->extKey, 0);
+            t3lib_div::devLog('Email Content was: ' . $email['body'], $this->extKey, 0);
+            t3lib_div::devLog('piVars:', $this->extKey, 0, $this->piVars);
+        }
 
+        /*
         $s_Redirect = t3lib_div::locationheaderUrl(
             $this->cObj->typoLink_URL(
                 array('parameter' => $this->conf['redirectTo'])
             )
         );
-
         header('Location: ' . $s_Redirect);
         exit;
+         */
 
     }
 
@@ -230,7 +163,7 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
         //Clean DB
         $_time = date('U') - 60*60*24*7;
 
-        $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_pluploadfrontend_uploads', 'tstamp < '.$_time);
+        $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_pluploadfrontend_uploads', 'tstamp < ' . $_time);
     }
     
 	/**
@@ -246,28 +179,69 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
 		$this->pi_loadLL();
 		$this->pi_USER_INT_obj = 1;	// Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
 	
-        $result = array();
-        $this->init();
+        $this->debug = t3lib_extMgm::isLoaded('devlog');
+         $result = array();
+        //$this->init();
 
-        if (isset($_FILES['Filedata'])) {
+/*        if (isset($_FILES['Filedata'])) {
             $this->isUpload();
-        }
-        if (isset($_POST['send']) && $_POST['send']==1) {
-            return $this->isSend();
+        }*/
+
+        $feUserObj = $GLOBALS['TSFE']->fe_user;
+        $feUserId = intval($feUserObj->user['uid']);
+
+        if($feUserId > 0){
+            // Settings
+            $sysconf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extKey]);
+            if(substr($sysconf['feuseruploadpath'],-1,1) == DIRECTORY_SEPARATOR) {
+                $sysconf['feuseruploadpath'] = substr($sysconf['feuseruploadpath'],0,-1);
+            }
+            $this->targetDir = t3lib_div::convUmlauts($sysconf['feuseruploadpath']);
+
+            $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_pluploadfrontend_email_leader, tx_pluploadfrontend_upload_folder, name, email, company', 'fe_groups LEFT JOIN fe_users ON fe_users.usergroup = fe_groups.uid', 'fe_users.uid = ' . $feUserId . ' AND fe_users.deleted = 0 AND fe_users.disable = 0 AND fe_groups.deleted = 0 AND fe_groups.hidden = 0');
+            if ($res !== false) {
+                $row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+                if($row !== false) {
+                    $this->targetEmail = $row['tx_pluploadfrontend_email_leader'];
+                    $this->targetDir .= DIRECTORY_SEPARATOR . $row['tx_pluploadfrontend_upload_folder'];
+                    $this->feUserName = $row['name'];
+                    $this->feUserEmail = $row['email'];
+                    $this->feUserCompany = $row['company'];
+                    if($this->debug) {
+                        t3lib_div::devLog('targetEmail ' . (t3lib_div::validEmail($this->targetEmail) ? '(gueltige) ' : '(ungueltig) '). ' Emailadresse: ' . $this->targetEmail, $this->extKey, 0);
+                        t3lib_div::devLog('targetDir: ' . $this->targetDir, $this->extKey, 0);
+                    }
+                }
+                $GLOBALS['TYPO3_DB']->sql_free_result($res);
+            }
+
+            if($this->debug){
+                 t3lib_div::devLog('piVars', $this->extKey, 0, $this->piVars    );
+            }
+
+            if ($this->piVars['send'] || $this->piVars['finish']) {
+                 $this->isSend();
+                //return $this->isSend();
+            }
+
+            //<textarea id="log" style="width: 100%; height: 150px; font-size: 11px" spellcheck="false" wrap="off"></textarea>
+            $content = '
+                <form id="tx_pluploadfrontend_pi1_form" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="POST">
+                    <div id="tx_pluploadfrontend_pi1_uploader">
+                        <p>You browser doesn\'t have Flash, Silverlight, Gears, BrowserPlus or HTML5 support.</p>
+                    </div>
+                    <p><label for="tx_pluploadfrontend_pi1_name">Name</label><input type="text" name="tx_pluploadfrontend_pi1[name]" id="tx_pluploadfrontend_pi1_name" value="' . $this->feUserName . '" placeholder="Ihr Name" /></p>
+                    <p><label for="tx_pluploadfrontend_pi1_company">Firma</label><input type="text" name="tx_pluploadfrontend_pi1[company]" id="tx_pluploadfrontend_pi1_company" value="' . $this->feUserCompany . '" placeholder="Ihr Firma" /></p>
+                    <p><label for="tx_pluploadfrontend_pi1_description">Beschreibung</label><textarea id="tx_pluploadfrontend_pi1_description" name="tx_pluploadfrontend_pi1[description]" placeholder="Beschreibung zu den Dateien"></textarea></p>
+                    <input type="hidden" name="tx_pluploadfrontend_pi1[finish]" id="tx_pluploadfrontend_pi1_finish" value="0" />
+                    <input type="submit" name="tx_pluploadfrontend_pi1[send]" id="tx_pluploadfrontend_pi1_send" value="Abschicken" />
+                </form>
+            ';
+        } else {
+            $content = '<h2>Bitte zuerst einloggen.</h2>';
         }
 
-		$content='
-            <textarea id="log" style="width: 100%; height: 150px; font-size: 11px" spellcheck="false" wrap="off"></textarea>
-            <form action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="POST">
-                <div id="uploader">
-                    <p>You browser doesn\'t have Flash, Silverlight, Gears, BrowserPlus or HTML5 support.</p>
-                </div>
-                <p><input type="text" name="name" style="width:100%;" placeholder="Ihr Name" /></p>
-                <p><textarea name="message" style="width:100%;height:150px;" placeholder="Hinweis zu den Dateien"></textarea></p>
-                <input type="submit" value="Send" />
-            </form>
-		';
-	
+
 		return $this->pi_wrapInBaseClass($content);
 	}
 }
