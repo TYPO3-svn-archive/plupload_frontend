@@ -104,6 +104,9 @@ class tx_pluploadfrontend_eID {
             // Clean the fileName for security reasons
             $fileName = preg_replace('/[^\w\._]+/', '', t3lib_div::convUmlauts($fileName));
 
+            if(!t3lib_div::verifyFilenameAgainstDenyPattern($fileName)) {
+                die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Filename is not allowed."}, "id" : "id"}');
+            }
 
             if($this->debug) {
                 t3lib_div::devLog('fileName: ' . $fileName, $extKey, 0);
@@ -112,7 +115,7 @@ class tx_pluploadfrontend_eID {
             }
 
              // Make sure the fileName is unique but only if chunking is disabled
-            if ($chunks < 2 && file_exists(PATH_site . $targetDir . DIRECTORY_SEPARATOR . $fileName)) {
+            if (!t3lib_div::_GP('send') && $chunks < 2 && file_exists(PATH_site . $targetDir . DIRECTORY_SEPARATOR . $fileName)) {
                 $ext = strrpos($fileName, '.');
                 $fileName_a = substr($fileName, 0, $ext);
                 $fileName_b = substr($fileName, $ext);
@@ -123,9 +126,11 @@ class tx_pluploadfrontend_eID {
                 $fileName = $fileName_a . '_' . $count . $fileName_b;
             }
 
+
             // Create target dir
             if (!file_exists($targetDir))
                 t3lib_div::mkdir(PATH_site . $targetDir);
+
 
             // Remove old temp files
             if (is_dir(PATH_site . $targetDir) && ($dir = opendir(PATH_site . $targetDir))) {

@@ -1,8 +1,9 @@
+[userFunc = user_pluploadFrontendOnCurrentPage]
+
 page.includeCSS.plupload_frontend_1 = EXT:plupload_frontend/res/css/plupload_frontend.css
 page.includeCSS.plupload_frontend_2 = EXT:plupload_frontend/res/css/plupload.queue.css
 page.includeCSS.plupload_frontend_3 = EXT:plupload_frontend/res/css/jquery.ui.plupload.css
 
-[userFunc = user_pluploadFrontendOnCurrentPage]
 
     // if plupload_frontend is on current page build up validation js
 
@@ -60,7 +61,7 @@ lib.pluploadfrontendjs {
                 
         $("#tx_pluploadfrontend_pi1_uploader").pluploadQueue({
             // General settings
-            runtimes : 'gears,flash,silverlight,browserplus,html5,html4',
+            runtimes : 'html5,gears,flash,silverlight,browserplus,html4',
             url : '/?eID=plupload_frontend',
             max_file_size : '200mb',
             chunk_size : '1mb',
@@ -70,15 +71,14 @@ lib.pluploadfrontendjs {
             //resize : {width : 320, height : 240, quality : 90},
             rename : true,
 
-            multipart_params : {datafield: 'testintg123'},
+            multipart_params : {session_id: 'testintg123'},
 
             // Specify what files to browse for
             filters : [
                 {title : "Image files", extensions : "jpg,gif,png,tif,ai,eps,psd"},
                 {title : "Archiv files", extensions : "zip,rar,tar.gz,tar"},
                 {title : "Pdf files", extensions : "pdf"},
-                {title : "Word files", extensions : "doc"},
-                {title : "Excel files", extensions : "xls,xlsx"}
+                {title : "Office files", extensions : "doc,docx,xls,xlsx,ppt"}
             ],
 
             // Flash settings

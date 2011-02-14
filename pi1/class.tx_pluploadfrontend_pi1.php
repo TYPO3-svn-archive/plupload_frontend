@@ -99,6 +99,10 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
 
         while ($_upload = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
             $_data .= '<li><a href="' . $_upload['path'] . $_upload['name'] . '">' . $_upload['name'] . '</a></li>';
+            t3lib_div::fixPermissions(PATH_site . $this->targetDir . DIRECTORY_SEPARATOR . $_upload['name']);
+            if($this->debug) {
+                t3lib_div::devLog('Fixes Filepath: ' . PATH_site . $this->targetDir . DIRECTORY_SEPARATOR . $_upload['name'], $this->extKey, 0);
+            }
         }
         $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_pluploadfrontend_uploads', 'ip=\'' . $_SERVER['REMOTE_ADDR'] . '\'');
         return $_data;
@@ -147,7 +151,6 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
             t3lib_div::devLog('piVars:', $this->extKey, 0, $this->piVars);
         }
 
-        /*
         $s_Redirect = t3lib_div::locationheaderUrl(
             $this->cObj->typoLink_URL(
                 array('parameter' => $this->conf['redirectTo'])
@@ -155,7 +158,6 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
         );
         header('Location: ' . $s_Redirect);
         exit;
-         */
 
     }
 
@@ -192,7 +194,7 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
 
         if($feUserId > 0){
             // Settings
-            $sysconf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extKey]);
+            $sysconf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
             if(substr($sysconf['feuseruploadpath'],-1,1) == DIRECTORY_SEPARATOR) {
                 $sysconf['feuseruploadpath'] = substr($sysconf['feuseruploadpath'],0,-1);
             }

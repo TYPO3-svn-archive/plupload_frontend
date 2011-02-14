@@ -22,7 +22,7 @@ After upload an automatical generated email with links to the uploaded files wil
 	'conflicts' => '',
 	'priority' => '',
 	'module' => '',
-	'state' => 'alpha',
+	'state' => 'beta',
 	'internal' => '',
 	'uploadfolder' => 0,
     'createDirs' => 'uploads/tx_pluploadfrontend',
@@ -30,7 +30,7 @@ After upload an automatical generated email with links to the uploaded files wil
 	'clearCacheOnLoad' => 0,
 	'lockType' => '',
 	'author_company' => '',
-	'version' => '0.0.0',
+	'version' => '0.8.0',
 	'constraints' => array(
 		'depends' => array(
 		),

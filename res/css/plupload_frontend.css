@@ -1,4 +1,4 @@
 .tx-pluploadfrontend-pi1 label {width:20%;padding-right:1%;display:block;float:left;font-weight:bold;}
-.tx-pluploadfrontend-pi1 input, .tx-pluploadfrontend-pi1 textarea {width:75%;}
+.tx-pluploadfrontend-pi1 input, .tx-pluploadfrontend-pi1 textarea {width:75%;margin-left:0;}
 .tx-pluploadfrontend-pi1 textarea {height:10em;}
 .tx-pluploadfrontend-pi1 #tx_pluploadfrontend_pi1_send{width:auto;padding:3px 5px;margin-left:21%;}

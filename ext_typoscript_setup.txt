@@ -1,9 +1,6 @@
 plugin.tx_pluploadfrontend_pi1 {
 	// UploadPath
-	uploadPath = {$plugin.tx_pluploadfrontend_pi1.uploadPath}
-	filedirLength = {$plugin.tx_pluploadfrontend_pi1.filedirLength}
 	mailto = {$plugin.tx_pluploadfrontend_pi1.mailto}
 	mailabsender = {$plugin.tx_pluploadfrontend_pi1.mailabsender}
-	storageId = {$plugin.tx_pluploadfrontend_pi1.storageId}
 	redirectTo = {$plugin.tx_pluploadfrontend_pi1.redirectTo}
 }
