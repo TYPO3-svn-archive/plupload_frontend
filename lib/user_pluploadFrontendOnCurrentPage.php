@@ -24,12 +24,12 @@
 
 
 /**
- * Function user_pluploadFrontendOnCurrentPage() checks if a me_uploadify plugin is inserted on current page
+ * Function user_pluploadFrontendOnCurrentPage() checks if a plupload_frontend plugin is inserted on current page
  *
  * @return	boolean		false/true
  */
 function user_pluploadFrontendOnCurrentPage() {
-	$uploadifyOnCurrentPage = false;
+	$pluploadfrontend = false;
 	if (TYPO3_MODE == 'FE') {
 		$ttContentWhere = 'AND deleted = 0 AND hidden = 0';
 		if (is_array($GLOBALS['TCA']['tt_content']) && method_exists($GLOBALS['TSFE']->sys_page, 'enableFields')) {
@@ -37,18 +37,18 @@ function user_pluploadFrontendOnCurrentPage() {
 		}
 
 		$pid = getCorrectPageIdForPluploadFrontendOnCurrentPageUserfunc();
-		$where = 'pid = ' . intval($pid) . ' AND list_type = "me_uploadify_pi1" ' . $ttContentWhere;
+		$where = 'pid = ' . intval($pid) . ' AND list_type = "plupload_frontend_pi1" ' . $ttContentWhere;
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery ('COUNT(*) AS t', 'tt_content', $where);
 
 		if ($res !== false) {
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 			if ($row !== false) {
-				$uploadifyOnCurrentPage = true;
+				$pluploadfrontend = true;
 			}
 			$GLOBALS['TYPO3_DB']->sql_free_result($res);
 		}
 	}
-	return $uploadifyOnCurrentPage;
+	return $pluploadfrontend;
 }
 
 /**
