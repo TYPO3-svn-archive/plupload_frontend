@@ -78,7 +78,7 @@ lib.pluploadfrontendjs {
                 {title : "Image files", extensions : "jpg,gif,png,tif,ai,eps,psd"},
                 {title : "Archiv files", extensions : "zip,rar,tar.gz,tar"},
                 {title : "Pdf files", extensions : "pdf"},
-                {title : "Office files", extensions : "doc,docx,xls,xlsx,ppt"}
+                {title : "Office files", extensions : "doc,docx,xls,xlsx,ppt,sxw"}
             ],
 
             // Flash settings
@@ -157,7 +157,7 @@ lib.pluploadfrontendjs {
                              send: true
                          },
                          function() {
-                             console.info(arguments);
+                            // console.info(arguments);
                          });
                 },
 
@@ -207,7 +207,7 @@ lib.pluploadfrontendjs {
 
 [userFunc = user_pluploadFrontendOnCurrentPage] && [userFunc = user_pluploadFrontendCheckT3jquery(false)]
 
-    // if powermail is on current page and t3jquery is NOT loaded include jquery and jquery tools from cdn
+    // if plupload_frontend is on current page and t3jquery is NOT loaded include jquery and jquery tools from cdn
 
 page.includeJSFooter {
 	plupload_frontend_10.external = 1
@@ -225,9 +225,25 @@ page.jsFooterInline.20469 < lib.pluploadfrontendjs
 
 [end]
 
+[globalVar = GP:L < 1] && [userFunc = user_pluploadFrontendOnCurrentPage] && [userFunc = user_pluploadFrontendCheckT3jquery(false)]
+
+page.includeJSFooter {
+	plupload_frontend_60 = EXT:plupload_frontend/res/js/i18n/de.js
+}
+
+[end]
+
+[globalVar = GP:L = 2] && [userFunc = user_pluploadFrontendOnCurrentPage] && [userFunc = user_pluploadFrontendCheckT3jquery(false)]
+
+page.includeJSFooter {
+	plupload_frontend_60 = EXT:plupload_frontend/res/js/i18n/fr.js
+}
+
+[end]
+
 [userFunc = user_pluploadFrontendOnCurrentPage] && [userFunc = user_pluploadFrontendCheckT3jquery(true)]
 
-    // if powermail is on current page and t3jquery is loaded include jquery and validation js using t3jquery
+    // if plupload_frontend is on current page and t3jquery is loaded include jquery and validation js using t3jquery
 
 includeLibs.t3jquery = EXT:t3jquery/class.tx_t3jquery.php
 page.20469 = COA
@@ -272,11 +288,41 @@ page.20469 {
         //compress = 1
         tofooter = 1
     }
-    70 = USER
-    70 {
+    80 = USER
+    80 {
         userFunc = tx_t3jquery->addJS
         jsdata.cObject < lib.pluploadfrontendjs
         compress = 1
+        tofooter = 1
+    }
+}
+
+[end]
+
+[globalVar = GP:L < 1] && [userFunc = user_pluploadFrontendOnCurrentPage] && [userFunc = user_pluploadFrontendCheckT3jquery(true)]
+
+page.20469 = COA
+page.20469 {
+    70 = USER
+    70 {
+        userFunc = tx_t3jquery->addJS
+        jsfile = EXT:plupload_frontend/res/js/i18n/de.js
+        //compress = 1
+        tofooter = 1
+    }
+}
+
+[end]
+
+[globalVar = GP:L = 2] && [userFunc = user_pluploadFrontendOnCurrentPage] && [userFunc = user_pluploadFrontendCheckT3jquery(true)]
+
+page.20469 = COA
+page.20469 {
+    70 = USER
+    70 {
+        userFunc = tx_t3jquery->addJS
+        jsfile = EXT:plupload_frontend/res/js/i18n/fr.js
+        //compress = 1
         tofooter = 1
     }
 }

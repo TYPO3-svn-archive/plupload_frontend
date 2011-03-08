@@ -11,6 +11,37 @@
 			<label index="list_mode_3">Mode 3</label>
 			<label index="back">Back</label>
 			<label index="submit_button_label">Click here to submit value</label>
+            <label index="mail_new_upload_available">New Upload available</label>
+            <label index="mail_upload_headline">New Upload available</label>
+            <label index="mail_upload_name_label">Name</label>
+            <label index="mail_upload_company_label">Company</label>
+            <label index="mail_upload_description_label">Description</label>
+            <label index="mail_upload_data_label">Files</label>
+            <label index="mail_upload_send">Send</label>
+            <label index="mail_upload_placeholder_name">Your Name</label>
+            <label index="mail_upload_placeholder_company">Your Company</label>
+            <label index="mail_upload_placeholder_description">Description of the files</label>
+            <label index="mail_upload_no_support">You browser doesn\'t have Flash, Silverlight, Gears, BrowserPlus or HTML5 support. You must upload your files separately.</label>
+            <label index="mail_upload_login_first">Please login first</label>
 		</languageKey>
+        <languageKey index="de" type="array">
+            <label index="list_mode_1">Mode 1</label>
+            <label index="list_mode_2">Mode 2</label>
+            <label index="list_mode_3">Mode 3</label>
+            <label index="back">Back</label>
+            <label index="submit_button_label">Click here to submit value</label>
+            <label index="mail_new_upload_available">Neuer Upload verfügbar</label>
+            <label index="mail_upload_headline">Neuer Upload verfügbar</label>
+            <label index="mail_upload_name_label">Name</label>
+            <label index="mail_upload_company_label">Firma</label>
+            <label index="mail_upload_description_label">Beschreibung</label>
+            <label index="mail_upload_data_label">Dateien</label>
+            <label index="mail_upload_send">Absenden</label>
+            <label index="mail_upload_placeholder_name">Ihr Name</label>
+            <label index="mail_upload_placeholder_company">Ihre Firma</label>
+            <label index="mail_upload_placeholder_description">Beschreibung der Dateien</label>
+            <label index="mail_upload_no_support">Ihr Browser bietet keinen Flash, Silverlight, Gears, BrowserPlus oder HTML5 Support. Sie müssen Ihre Dateien leider einzeln hochladen.</label>
+            <label index="mail_upload_login_first">Bitte zuerst einloggen</label>
+        </languageKey>
 	</data>
 </T3locallang>

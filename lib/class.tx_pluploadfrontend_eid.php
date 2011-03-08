@@ -195,8 +195,6 @@ class tx_pluploadfrontend_eID {
 
             if($chunk == $chunks - 1){
 
-                t3lib_div::fixPermissions(PATH_site . $targetDir . DIRECTORY_SEPARATOR . $fileName);
-
                 if($this->debug) {
                     t3lib_div::devLog('POST/GET Vars: ' . $queued, $extKey, 0, $_REQUEST);
                 }

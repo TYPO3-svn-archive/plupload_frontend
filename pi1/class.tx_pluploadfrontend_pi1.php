@@ -120,34 +120,61 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
 
         $a_Marker = array();
 
-        $a_Marker['###UPLOAD_DATA###'] = $this->getUploadData();
-
-
+        $a_Marker['###INPUT_UPLOAD_HEADLINE###'] = $this->pi_getLL('mail_upload_headline');
         $a_Marker['###INPUT_NAME###'] = $this->piVars['name'];
+        $a_Marker['###INPUT_NAME_LABEL###'] = $this->pi_getLL('mail_upload_name_label');
         $a_Marker['###INPUT_COMPANY###'] = $this->piVars['company'];
-        $a_Marker['###INPUT_INHALT###'] = $this->piVars['description'];
+        $a_Marker['###INPUT_COMPANY_LABEL###'] = $this->pi_getLL('mail_upload_company_label');
+        $a_Marker['###INPUT_DESCRIPTION###'] = $this->piVars['description'];
+        $a_Marker['###INPUT_DESCRIPTION_LABEL###'] = $this->pi_getLL('mail_upload_description_label');
+        $a_Marker['###UPLOAD_DATA###'] = $this->getUploadData();
+        $a_Marker['###UPLOAD_DATA_LABEL###'] = $this->pi_getLL('mail_upload_data_label');
+
         $email['body'] = $this->cObj->substituteMarkerArrayCached($s_Tmpl, $a_Marker);
 
         $email['address'] = $this->targetEmail;
 
-        $email['subject'] = 'Neuer Upload auf Ihrem Server';
+        $email['subject'] = $this->pi_getLL('mail_new_upload_available');
 
-        $html_start='<html><head><title>Neuer Upload auf Ihrem Server</title></head><body>';
+        $html_start='<html><head><title>' . $this->pi_getLL('mail_new_upload_available') . '</title></head><body>';
         $html_end='</body></html>';
 
-        $this->htmlMail = t3lib_div::makeInstance('t3lib_htmlmail');
-        $this->htmlMail->start();
-        $this->htmlMail->recipient = $email['address'];
-        $this->htmlMail->subject = $email['subject'];
-        $this->htmlMail->from_email = ($this->feUserEmail != '') ? $this->feUserEmail : $this->conf['mailto'];
-        $this->htmlMail->from_name = ($this->feUserName != '') ? $this->feUserName : $this->conf['mailabsender'];
-        $this->htmlMail->returnPath = ($this->feUserEmail != '') ? $this->feUserEmail : $this->conf['mailto'];
-        $this->htmlMail->addPlain($email['body']);
-        $this->htmlMail->setHTML($this->htmlMail->encodeMsg($html_start . $email['body'] . $html_end));
-        $this->htmlMail->send($email['address']);
-        if($this->debug) {
-            t3lib_div::devLog('A Email was sent to ' . $this->targetEmail, $this->extKey, 0);
-            t3lib_div::devLog('Email Content was: ' . $email['body'], $this->extKey, 0);
+        $from = ($this->feUserEmail != '') ? $this->feUserEmail : $this->conf['mailto'];
+        $fromName = ($this->feUserName != '') ? $this->feUserName : $this->conf['mailabsender'];
+        $returnPath = ($this->feUserEmail != '') ? $this->feUserEmail : $this->conf['mailto'];
+
+        $success = false;
+
+        if (t3lib_div::compat_version('4.5')){
+            // new TYPO3 swiftmailer code
+            $this->mail = t3lib_div::makeInstance('t3lib_mail_Message');
+            $this->mail->setTo(array($email['address']))
+                ->setFrom(array($from => $fromName))
+                ->setSubject($email['subject'])
+                ->setReturnPath($returnPath)
+                ->setCharset($GLOBALS['TSFE']->metaCharset)
+                ->addPart($email['body'], 'text/plain')
+                ->setBody($html_start . $email['body'] . $html_end, 'text/html');
+            $this->mail->send();
+            $success = $this->mail->isSent();
+            
+        } else {
+
+            $this->mail = t3lib_div::makeInstance('t3lib_htmlmail');
+            $this->mail->start();
+            $this->mail->recipient = $email['address'];
+            $this->mail->subject = $email['subject'];
+            $this->mail->from_email = $from;
+            $this->mail->from_name = $fromName;
+            $this->mail->returnPath = $returnPath;
+            $this->mail->addPlain($email['body']);
+            $this->mail->setHTML($this->mail->encodeMsg($html_start . $email['body'] . $html_end));
+            $success = $this->mail->send();
+        }
+        
+        if($this->debug && $success) {
+            t3lib_div::devLog('A Email was successfully sent to ' . $email['address'], $this->extKey, 0);
+            t3lib_div::devLog('Email content was: ' . $email['body'], $this->extKey, 0);
             t3lib_div::devLog('piVars:', $this->extKey, 0, $this->piVars);
         }
 
@@ -218,7 +245,7 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
             }
 
             if($this->debug){
-                 t3lib_div::devLog('piVars', $this->extKey, 0, $this->piVars    );
+                 t3lib_div::devLog('piVars', $this->extKey, 0, $this->piVars);
             }
 
             if ($this->piVars['send'] || $this->piVars['finish']) {
@@ -230,17 +257,17 @@ class tx_pluploadfrontend_pi1 extends tslib_pibase {
             $content = '
                 <form id="tx_pluploadfrontend_pi1_form" action="' . $this->pi_getPageLink($GLOBALS['TSFE']->id) . '" method="POST">
                     <div id="tx_pluploadfrontend_pi1_uploader">
-                        <p>You browser doesn\'t have Flash, Silverlight, Gears, BrowserPlus or HTML5 support.</p>
+                        <p>' . $this->pi_getLL('mail_upload_no_support'). '</p>
                     </div>
-                    <p><label for="tx_pluploadfrontend_pi1_name">Name</label><input type="text" name="tx_pluploadfrontend_pi1[name]" id="tx_pluploadfrontend_pi1_name" value="' . $this->feUserName . '" placeholder="Ihr Name" /></p>
-                    <p><label for="tx_pluploadfrontend_pi1_company">Firma</label><input type="text" name="tx_pluploadfrontend_pi1[company]" id="tx_pluploadfrontend_pi1_company" value="' . $this->feUserCompany . '" placeholder="Ihr Firma" /></p>
-                    <p><label for="tx_pluploadfrontend_pi1_description">Beschreibung</label><textarea id="tx_pluploadfrontend_pi1_description" name="tx_pluploadfrontend_pi1[description]" placeholder="Beschreibung zu den Dateien"></textarea></p>
+                    <p><label for="tx_pluploadfrontend_pi1_name">' . $this->pi_getLL('mail_upload_name_label'). '</label><input type="text" name="tx_pluploadfrontend_pi1[name]" id="tx_pluploadfrontend_pi1_name" value="' . $this->feUserName . '" placeholder="' . $this->pi_getLL('mail_upload_placeholder_name'). '" /></p>
+                    <p><label for="tx_pluploadfrontend_pi1_company">' . $this->pi_getLL('mail_upload_company_label'). '</label><input type="text" name="tx_pluploadfrontend_pi1[company]" id="tx_pluploadfrontend_pi1_company" value="' . $this->feUserCompany . '" placeholder="' . $this->pi_getLL('mail_upload_placeholder_company'). '" /></p>
+                    <p><label for="tx_pluploadfrontend_pi1_description">' . $this->pi_getLL('mail_upload_description_label'). '</label><textarea id="tx_pluploadfrontend_pi1_description" name="tx_pluploadfrontend_pi1[description]" placeholder="' . $this->pi_getLL('mail_upload_placeholder_description'). '"></textarea></p>
                     <input type="hidden" name="tx_pluploadfrontend_pi1[finish]" id="tx_pluploadfrontend_pi1_finish" value="0" />
-                    <input type="submit" name="tx_pluploadfrontend_pi1[send]" id="tx_pluploadfrontend_pi1_send" value="Abschicken" />
+                    <input type="submit" name="tx_pluploadfrontend_pi1[send]" id="tx_pluploadfrontend_pi1_send" value="' . $this->pi_getLL('mail_upload_send'). '" />
                 </form>
             ';
         } else {
-            $content = '<h2>Bitte zuerst einloggen.</h2>';
+            $content = '<h2>' . $this->pi_getLL('mail_upload_login_first') . '</h2>';
         }
 
 
