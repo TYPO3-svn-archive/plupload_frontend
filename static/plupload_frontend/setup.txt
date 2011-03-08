@@ -221,16 +221,7 @@ page.includeJSFooter {
 
     // if powermail is on current page and t3jquery is NOT loaded include validation js into page footer
 
-page.footerData.20469 < lib.pluploadfrontendjs
-page.footerData.20469.wrap (
- <script type="text/javascript">
- /* <![CDATA[*/
- <!--
- (function($){|})(jQuery);
- // -->
- /*]]>*/
- </script>
-)
+page.jsFooterInline.20469 < lib.pluploadfrontendjs
 
 [end]
 

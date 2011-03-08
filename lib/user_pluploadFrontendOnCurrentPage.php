@@ -42,7 +42,7 @@ function user_pluploadFrontendOnCurrentPage() {
 
 		if ($res !== false) {
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-			if ($row !== false) {
+			if (intval($row['t']) > 0) {
 				$pluploadfrontend = true;
 			}
 			$GLOBALS['TYPO3_DB']->sql_free_result($res);
