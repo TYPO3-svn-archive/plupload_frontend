@@ -30,7 +30,7 @@ After upload an automatical generated email with links to the uploaded files wil
 	'clearCacheOnLoad' => 0,
 	'lockType' => '',
 	'author_company' => '',
-	'version' => '0.8.0',
+	'version' => '0.9.0',
 	'constraints' => array(
 		'depends' => array(
 		),
